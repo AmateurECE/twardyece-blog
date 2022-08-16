@@ -19,12 +19,11 @@
 # You can create any custom variable you would like, and they will be
 # accessible in the templates via {{ site.myvariable }}.
 
-title: "Ethan's Technical Journal"
+title: "Ethan Twardy"
 email: ethan.twardy@gmail.com
-description: >- # this means to ignore newlines until "baseurl:"
-  Repository for writings mostly focused on journaling of technical
-  discoveries, challenges, and solutions. Mostly focused on my hobby projects,
-  but may also include some stories from my career from time to time. It's only
+description: >-
+  Here is where I publish stories mostly focused on technical challenges
+  and solutions I encounter while developing open-source software. It's only
   meant to be useful to me, but if it's useful to you as well, then it's gone
   above and beyond its original purpose.
 baseurl: "/blog" # the subpath of your site, e.g. /blog
