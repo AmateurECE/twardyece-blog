@@ -198,8 +198,8 @@ OpenGL version string: 2.1 Mesa 23.1.0-devel
  [...omitted...]
 ```
 
-Success! The machine feels so much snappier, and I can now even the `alpha` to
-less than 1.0 in my `foot` config without causing hair-pulling performance
+Success! The machine feels so much snappier, and I can now even set the `alpha`
+to less than 1.0 in my `foot` config without causing hair-pulling performance
 issues. Hopefully my kernel patch will merge soon, so others who are trying to
 build kernels with Rust support on Gentoo won't have to follow in my debugging
 steps.
