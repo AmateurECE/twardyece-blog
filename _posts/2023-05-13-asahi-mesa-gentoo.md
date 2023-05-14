@@ -2,27 +2,28 @@
 layout: post
 title: "Getting the Asahi OpenGL Driver to Work on Gentoo Linux"
 date: 2023-05-13 17:06:00 -0500
-categories: linux
+categories: asahi
 ---
 
-I currently own an Apple M1 MacBook Pro, because I was excited to try Linux on ARM as
-my daily driver. When the Asahi Linux project announced that it would be moving away
-from Arch Linux ARM as its base distribution, I decided not to follow the community
-to Fedora, but instead to switch to Gentoo.
+I currently own an Apple M1 MacBook Pro, because I was excited to try Linux on
+ARM as my daily driver. When the Asahi Linux project announced that it would be
+moving away from Arch Linux ARM as its base distribution, I decided not to
+follow the community to Fedora, but instead to switch to Gentoo.
 
-This was my first brush with Gentoo, so there were some issues coming out of the
-gate. The issue I decided to tackle today is the use of the new Apple OpenGL driver.
+This was my first brush with Gentoo, so there were some issues coming out of
+the gate. The issue I decided to tackle today is the use of the new Apple
+OpenGL driver.
 
 Asahi Linux provides two kernel configurations for downstream distributions--a
-"stable" version, and an "edge" version. As of today, the only difference between
-these two versions is a small amount of kernel configuration. This can be seen in
-the [`PKGBUILD` for `linux-asahi`][1], which builds the two binary packages from the
-same revision of the sources.
+"stable" version, and an "edge" version. As of today, the only difference
+between these two versions is a small amount of kernel configuration. This can
+be seen in the [`PKGBUILD` for `linux-asahi`][1], which builds the two binary
+packages from the same revision of the sources.
 
-Well, here's the issue. I thought I was _already running_ the edge kernel. I applied
-the kernel configuration changes just as they were in that repository, but the Sway
-Window Manager felt incredibly slow and laggy, and I kept seeing messages like these
-in my journal:
+Well, here's the issue. I thought I was _already running_ the edge kernel. I
+applied the kernel configuration changes just as they were in that repository,
+but the Sway Window Manager felt incredibly slow and laggy, and I kept seeing
+messages like these in my journal:
 
 ```
 May 13 18:28:27 hackbook wayland[675]: MESA-LOADER: failed to open apple: /usr/lib64/dri/apple_dri.so: cannot open shared object file: No such file or directory (search paths /usr/lib64/dri, suffix _dri)
@@ -32,8 +33,8 @@ May 13 18:28:27 hackbook wayland[675]: 00:00:00.104 [ERROR] [wlr] [render/egl.c:
 May 13 18:28:27 hackbook wayland[675]: 00:00:00.104 [ERROR] [wlr] [render/gles2/renderer.c:679] Could not initialize EGL
 ```
 
-What gives? To start, I decided to take a look at the kernel configuration changes
-that specifically [enable the Asahi DRM driver][2]:
+What gives? To start, I decided to take a look at the kernel configuration
+changes that specifically [enable the Asahi DRM driver][2]:
 
 ```
 CONFIG_DRM_SIMPLEDRM_BACKLIGHT=n
@@ -52,9 +53,10 @@ CONFIG_DRM_ASAHI=m
 CONFIG_SUSPEND=y
 ```
 
-There's not a lot there, so I double-checked that all of that was set in my running
-kernel by grep-ing `/proc/config.gz`. This activity showed that `CONFIG_DRM_ASAHI`
-wasn't set. Interesting! Taking a look in `menuconfig`, we see:
+There's not a lot there, so I double-checked that all of that was set in my
+running kernel by grep-ing `/proc/config.gz`. This activity showed that
+`CONFIG_DRM_ASAHI` wasn't set. Interesting! Taking a look in `menuconfig`, we
+see:
 
 ```
 Symbol: DRM_ASAHI [=n]
@@ -69,13 +71,13 @@ Symbol: DRM_ASAHI [=n]
     Selects: RUST_DRM_SCHED [=n] && IOMMU_SUPPORT [=y] && IOMMU_IO_PGTABLE_LPAE [=y] && RUST_DRM_GEM_SHMEM_HELPER [=n] && RUST_APPLE_RTKIT [=n]
 ```
 
-`CONFIG_RUST` is unset! Why would that be? I have rust installed, and I have the
-Rust USE flag set on the `sys-kernel/asahi-sources`. What gives? Looking a little
-further, `CONFIG_RUST` depends on `CONFIG_RUST_IS_AVAILABLE`, a variable that is unset
-and has no description in `menuconfig`. As you might imagine, it's not possible to set
-this variable in your `.config`. I tried. So, I decided to go back to the
-[instructions to build the kernel with Rust support][3]. I already had Rust installed,
-of course.
+`CONFIG_RUST` is unset! Why would that be? I have rust installed, and I have
+the Rust USE flag set on the `sys-kernel/asahi-sources`. What gives? Looking a
+little further, `CONFIG_RUST` depends on `CONFIG_RUST_IS_AVAILABLE`, a variable
+that is unset and has no description in `menuconfig`. As you might imagine,
+it's not possible to set this variable in your `.config`. I tried. So, I
+decided to go back to the
+[instructions to build the kernel with Rust support][3].
 
 ```
 [edtwardy@hackbook test-kernel]$ make -C /usr/src/linux-6.2.0_p12-asahi O=$PWD LLVM=1 rustavailable
@@ -104,13 +106,13 @@ make: *** [Makefile:242: __sub-make] Error 2
 make: Leaving directory '/usr/src/linux-6.2.0_p12-asahi'
 ```
 
-Something is suspicious about this one. I'm running `clang` version 16.0.0, according
-to `equery`. I get the impression that something is wrong here. Clang version 6.2.0
-is not even available in the Gentoo repository, and installing older versions also
-doesn't seem to resolve the issue.
+Something is suspicious about this one. I'm running `clang` version 16.0.0,
+according to `equery`. I get the impression that something is wrong here. Clang
+version 6.2.0 is not even available in the Gentoo repository, and installing
+older versions also doesn't seem to resolve the issue.
 
-So, I opened the failing Makefile, and chased the failure down to these lines in
-`scripts/rust_is_available.sh`:
+So, I opened the failing Makefile, and chased the failure down to these lines
+in `scripts/rust_is_available.sh`:
 
 ```bash
 # Check that the `libclang` used by the Rust bindings generator is suitable.
@@ -121,19 +123,22 @@ bindgen_libclang_version=$( \
 		| head -n 1 \
 ```
 
-Running each command here and iteratively adding the piped expressions reveals what's
-going on. This is the input to the `grep -oE '[0-9]+\.[0-9]+\.[0-9]+'` command:
+Running each command here and iteratively adding the piped expressions reveals
+what's going on. This is the input to the `grep -oE '[0-9]+\.[0-9]+\.[0-9]+'`
+command:
 
 ```
 /usr/src/linux-6.2.0_p12-asahi/scripts/rust_is_available_bindgen_libclang.h:2:9: warning: clang version 16.0.3  [-W#pragma-messages], err: false
 ```
 
-Do you see it? My filepath has a version string in it, and that `grep` command stops
-after the first match, so the result of this expression is `6.2.0`. This is a pretty
-simple issue to fix, and it became [my _very first_ kernel patch][4].
+Do you see it? My filepath has a version string in it, and that `grep` command
+stops after the first match, so the result of this expression is `6.2.0`. This
+is a pretty simple issue to fix, and it became
+[my _very first_ kernel patch][4].
 
-With that patch applied to my kernel tree, and after resolving a couple of additonal
-issues uncovered by the `rustavailable` target, however, it got worse:
+With that patch applied to my kernel tree, and after resolving a couple of
+additonal issues uncovered by the `rustavailable` target, however, it got
+worse:
 
 ```
 [edtwardy@hackbook test-kernel]$ cat ../PKGBUILDs/linux-asahi/config{,.edge} > .config
@@ -146,12 +151,13 @@ make[3]: *** [/home/edtwardy/Git/linux/rust/Makefile:298: rust/bindings/bindings
 ```
 
 About an hour of scraping Linux kernel mailing lists, StackOverflow, and GitHub
-finally caused me to stumble upon [this issue in the `rust-bindgen` repository][5],
-where one of the maintainers suggests that maybe there was a change in name mangling
-in clang 16. Another maintainer comments that the issue cannot be reproduced at
-`rust-bindgen` version `0.62`, where the changelog ambiguously states: "Various
-issues with upcoming clang/libclang versions have been fixed." So, I install that
-version, and my kernel build is off to the races!
+finally caused me to stumble upon
+[this issue in the `rust-bindgen` repository][5], where one of the maintainers
+suggests that maybe there was a change in name mangling in clang 16. Another
+maintainer comments that the issue cannot be reproduced at `rust-bindgen`
+version `0.62`, where the changelog ambiguously states: "Various issues with
+upcoming clang/libclang versions have been fixed." So, I install that version,
+and my kernel build is off to the races!
 
 ```
 [edtwardy@hackbook test-kernel]$ make -C /usr/src/linux-6.2.0_p12-asahi O=$PWD LLVM=1 -j10 KCFLAGS="-O3 -march=native -pipe"
@@ -161,12 +167,12 @@ version, and my kernel build is off to the races!
 ```
 
 Almost there! This doesn't fix the error message from wlroots, though, if you
-remember. It's complaining about not being able to find `apple_dri.so`. Pulling down
-the Arch Linux package for `mesa` from the Asahi Linux mirror shows the Apple OpenGL
-driver should definitely be there. Examining the USE flags for the
-`media-libs/mesa::asahi` package shows that there's a flag `VIDEO_CARDS: asahi` which
-is currently unset. Enabling this causes the compilation of Mesa to take a lot longer
-than I remember.
+remember. It's complaining about not being able to find `apple_dri.so`. Pulling
+down the Arch Linux package for `mesa` from the Asahi Linux mirror shows the
+Apple OpenGL driver should definitely be there. Examining the USE flags for the
+`media-libs/mesa::asahi` package shows that there's a flag `VIDEO_CARDS: asahi`
+which is currently unset. Enabling this causes the compilation of Mesa to take
+a lot longer than I remember.
 
 A clean reboot, and wlroots sings the praises of OpenGL acceleration--the error
 message disappears! Just to verify my sanity, let's check `glxinfo`:
@@ -192,10 +198,11 @@ OpenGL version string: 2.1 Mesa 23.1.0-devel
  [...omitted...]
 ```
 
-Success! The machine feels so much snappier, and I can now even the `alpha` to less
-than 1.0 in my `foot` config without causing hair-pulling performance issues.
-Hopefully my kernel patch will merge soon, so others who are trying to build kernels
-with Rust support on Gentoo won't have to follow in my debugging steps.
+Success! The machine feels so much snappier, and I can now even the `alpha` to
+less than 1.0 in my `foot` config without causing hair-pulling performance
+issues. Hopefully my kernel patch will merge soon, so others who are trying to
+build kernels with Rust support on Gentoo won't have to follow in my debugging
+steps.
 
 [1]: https://github.com/asahilinux/PKGBUILDs/blob/master/linux-asahi/PKGBUILD/
 [1]: https://github.com/asahilinux/PKGBUILDs/blob/master/linux-asahi/config.edge/
