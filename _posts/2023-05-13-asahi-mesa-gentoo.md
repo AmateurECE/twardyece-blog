@@ -204,8 +204,8 @@ issues. Hopefully my kernel patch will merge soon, so others who are trying to
 build kernels with Rust support on Gentoo won't have to follow in my debugging
 steps.
 
-[1]: https://github.com/asahilinux/PKGBUILDs/blob/master/linux-asahi/PKGBUILD/
-[2]: https://github.com/asahilinux/PKGBUILDs/blob/master/linux-asahi/config.edge/
+[1]: https://github.com/asahilinux/PKGBUILDs/blob/main/linux-asahi/PKGBUILD/
+[2]: https://github.com/asahilinux/PKGBUILDs/blob/main/linux-asahi/config.edge/
 [3]: https://www.kernel.org/doc/html/latest/rust/quick-start.html
 [4]: https://lore.kernel.org/llvm/20230513193238.28208-1-ethan.twardy@gmail.com/
 [5]: https://github.com/rust-lang/rust-bindgen/issues/2488
