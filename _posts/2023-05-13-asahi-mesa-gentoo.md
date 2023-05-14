@@ -57,25 +57,25 @@ kernel by grep-ing `/proc/config.gz`. This activity showed that `CONFIG_DRM_ASAH
 wasn't set. Interesting! Taking a look in `menuconfig`, we see:
 
 ```
-config DRM_ASAHI
-	tristate "Asahi (DRM support for Apple AGX GPUs)"
-	depends on RUST
-	depends on DRM
-	depends on (ARM64 && ARCH_APPLE) || (COMPILE_TEST && !GENERIC_ATOMIC64)
-	depends on MMU
-	select RUST_DRM_SCHED
-	select IOMMU_SUPPORT
-	select IOMMU_IO_PGTABLE_LPAE
-	select RUST_DRM_GEM_SHMEM_HELPER
-	select RUST_APPLE_RTKIT
-	help
-	  DRM driver for Apple AGX GPUs (G13x, found in the M1 SoC family)
+Symbol: DRM_ASAHI [=n]
+    Type  : tristate
+    Defined at drivers/gpu/drm/asahi/Kconfig:16
+      Prompt: Asahi (DRM support for Apple AGX GPUs)
+      Depends on: HAS_IOMEM [=y] && RUST [=n] && DRM [=y] && (ARM64 [=y] && ARCH_APPLE [=y] || COMPILE_TEST [=n] && !GENERIC_ATOMIC64 [=n]) && MMU [=y]
+      Location:
+        -> Device Drivers
+    (1)   -> Graphics support
+            -> Asahi (DRM support for Apple AGX GPUs) (DRM_ASAHI [=n])
+    Selects: RUST_DRM_SCHED [=n] && IOMMU_SUPPORT [=y] && IOMMU_IO_PGTABLE_LPAE [=y] && RUST_DRM_GEM_SHMEM_HELPER [=n] && RUST_APPLE_RTKIT [=n]
 ```
 
-Ah, well that would do it. `CONFIG_RUST_IS_AVAILABLE` is unset. As you might imagine,
-it's not possible to set this variable in your `.config`. I tried. So, I started with
-the [instructions to build the kernel with Rust support][3]. I already had Rust
-installed, of course.
+`CONFIG_RUST` is unset! Why would that be? I have rust installed, and I have the
+Rust USE flag set on the `sys-kernel/asahi-sources`. What gives? Looking a little
+further, `CONFIG_RUST` depends on `CONFIG_RUST_IS_AVAILABLE`, a variable that is unset
+and has no description in `menuconfig`. As you might imagine, it's not possible to set
+this variable in your `.config`. I tried. So, I decided to go back to the
+[instructions to build the kernel with Rust support][3]. I already had Rust installed,
+of course.
 
 ```
 [edtwardy@hackbook test-kernel]$ make -C /usr/src/linux-6.2.0_p12-asahi O=$PWD LLVM=1 rustavailable
