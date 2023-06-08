@@ -439,7 +439,7 @@ can be mounted under a collection _know_ that about themselves.
 What if we provided a layered mechanism for handlers to uniquely identify
 subordinate resources transparently of the mountpoint?
 
-[1]:
-[2]:
-[3]:
-[4]:
+[1]: https://github.com/AmateurECE/redfish-codegen/
+[2]: https://www.dmtf.org/standards/redfish
+[3]: https://swagger.io/docs/specification/2-0/what-is-swagger/
+[4]: https://promethia-27.github.io/dependency_injection_like_bevy_from_scratch/introductions.html
