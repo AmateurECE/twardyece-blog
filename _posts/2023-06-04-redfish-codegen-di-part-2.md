@@ -140,9 +140,9 @@ where
 ```
 
 Now, the primary benefit of this entire layer is that the composition of
-handlers into `Router`s is automated via semantic components. We've created
+handlers into `Router`s is automated via semantic components. I also created
 the struct `ResourceLocator` to simplify the creation of middleware for resource
-location. In `main`, we use it like so:
+location. In `main`, by handling all of the request mutation:
 
 ```rust
 ComputerSystem::default()
@@ -156,8 +156,8 @@ ComputerSystem::default()
     )),
 ```
 
-The `ResourceLocator` constructs `tower::Service`s that wrap the Service its
-constructed with.
+The `ResourceLocator` constructs `tower::Service`s (concrete type is
+`ResourceLocatorService`) that wrap the Service its constructed with.
 
 Just to make sure this is as scalable as we want it to be, let's create another
 collection of resources that can be subordinate to the `ComputerSystem`. Let's
