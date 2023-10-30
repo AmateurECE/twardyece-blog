@@ -19,7 +19,9 @@ working towards from now on in this series.
 The first great missing link in the framework is a suitable solution for
 events. Let's quickly review Redfish events so that we can design a solution
 that works in the best interest of the implementors, and meets the
-requirements in the standard.
+requirements in the standard. The Redfish Resource and Schema Guide (DSP2046)
+and the Redfish Data Model Specification (DSP0268) are critical documents for
+understanding the use within the specification.
 
 Events are defined in a _MessageRegistry_. The DMTF defines a set of standard
 message registries, which are available as part of DSP8011. The
