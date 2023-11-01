@@ -73,40 +73,36 @@ We know that we can send the output of a shell command to a CMake variable with
 `execute_process`, but `execute_process` typically runs at configuration time.
 Naturally, we want the version string to update at build time, and on _every_
 build, so we need to find a mechanism to change when `execute_process` is run.
-This feels like an appropriate use of CMake's _script mode_.
+This feels like an appropriate use of CMake's _script mode_. We'll additionally
+use `configure_file` to generate the file.
 
 I'll additionally put all of the versioning logic in `version.cmake`, so it's
 easier to relocate later.
 
-```diff
-diff --git a/version.cmake b/version.cmake
-new file mode 100644
-index 0000000..fd50d7b
---- /dev/null
-+++ b/version.cmake
-@@ -0,0 +1,22 @@
-+if(CMAKE_SCRIPT_MODE_FILE)
-+  # We are executing as a script
-+  execute_process(COMMAND git describe --dirty
-+    OUTPUT_VARIABLE GIT_REPO_VERSION
-+    OUTPUT_STRIP_TRAILING_WHITESPACE)
-+  configure_file(${INPUT_FILE} ${OUTPUT_FILE})
-+else()
-+  set(VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/version.h")
-+  # We have been included at configure time
-+  add_custom_target(version_header
-+    COMMAND ${CMAKE_COMMAND}
-+    -D INPUT_FILE="${CMAKE_CURRENT_SOURCE_DIR}/version.h.in"
-+    -D OUTPUT_FILE=${VERSION_HEADER}
-+    -P ${CMAKE_CURRENT_SOURCE_DIR}/version.cmake
-+    BYPRODUCTS ${VERSION_HEADER})
-+
-+  add_library(gitversion INTERFACE)
-+  target_include_directories(gitversion
-+    INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
-+  add_dependencies(gitversion version_header)
-+  add_library(gitversion::gitversion ALIAS gitversion)
-+endif()
+```cmake
+set(THIS_SCRIPT "version.cmake")
+if(${CMAKE_SCRIPT_MODE_FILE} MATCHES ${THIS_SCRIPT})
+  # We are executing as a script
+  execute_process(COMMAND git describe --dirty
+    OUTPUT_VARIABLE GIT_REPO_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  configure_file(${INPUT_FILE} ${OUTPUT_FILE})
+else()
+  set(VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/version.h")
+  # We have been included at configure time
+  add_custom_target(version_header
+    COMMAND ${CMAKE_COMMAND}
+    -D INPUT_FILE="${CMAKE_CURRENT_SOURCE_DIR}/version.h.in"
+    -D OUTPUT_FILE=${VERSION_HEADER}
+    -P ${CMAKE_CURRENT_SOURCE_DIR}/${THIS_SCRIPT}
+    BYPRODUCTS ${VERSION_HEADER})
+
+  add_library(gitversion INTERFACE)
+  target_include_directories(gitversion
+    INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+  add_dependencies(gitversion version_header)
+  add_library(gitversion::gitversion ALIAS gitversion)
+endif()
 ```
 
 This has kind of a UNIX-fork "feel" to it. If we aren't executing in script
@@ -180,7 +176,7 @@ read the [CMake docs for `configure_file`][2], we see:
 Which is _very_ cool. So even if none of our source files have changed, if the
 output of `git-describe` changes, the targets will be recompiled.
 
-That's a version solution in 22 lines of CMake!
+That's a version solution in 23 lines of CMake!
 
 [1]: https://github.com/smessmer/gitversion
 [2]: https://cmake.org/cmake/help/latest/command/configure_file.html
