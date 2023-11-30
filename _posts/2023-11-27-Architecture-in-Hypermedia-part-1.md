@@ -89,11 +89,17 @@ displays the variance from the target. The system highlights the variance in
 red when it is 10% or more below the target, or in green when 5% or more above
 the target.
 
-I modeled our single use case using [Gaphor][4]:
+I modeled our few use cases using [Gaphor][4]:
 
 ![IceCream Use Cases](/blog/assets/images/IceCreamGov-UseCases.svg)
 
-And we can derive three requirements from the problem statement above:
+An agent (but not the secret kind, as you can see from the diagram) goes out to
+the sites to collect the particulate data, and a different state employee
+(perhaps a third-party contractor, or a Housing and Economic Development
+Authority employee) sets the target for a period of time based on their
+complicated atmospheric model.
+
+We can also derive three requirements from the problem statement above:
 
 ![IceCreamGov Requirements](/blog/assets/images/IceCreamGov-Requirements.svg)
 
