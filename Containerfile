@@ -1,11 +1,17 @@
 FROM docker.io/library/debian:bookworm
 
+# Note: Some packages are not used for building, but they are required by
+# Jenkins:
+# - procps: Jenkins runs the ps(1) tool to test the container started.
+# - git: Jenkins performs a git checkout in the container.
 RUN apt-get update \
         && apt-get install -y --no-install-recommends \
         curl \
         graphviz \
         plantuml \
         ruby-dev \
+        procps \
+        git \
         && apt-get clean
 
 # PlantUML Setup
