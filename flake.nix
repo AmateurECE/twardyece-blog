@@ -17,7 +17,7 @@
         };
       in {
         default = pkgs.mkShell {
-          packages = [ pkgs.ruby pkgs.bundler ];
+          packages = with pkgs; [ ruby bundler plantuml graphviz-nox ];
         };
       }
     );
