@@ -8,7 +8,10 @@ pipeline {
         bundle install
         bundle exec jekyll build
         '''
-        sh "cp -a ${WORKSPACE}/_site/* ${HOME}/sitedata/blog/"
+        sh '''#!/bin/bash
+        mkdir -p ${HOME}/sitedata/blog
+        cp -a ${WORKSPACE}/_site/* ${HOME}/sitedata/blog/
+        '''
       }
     }
   }
