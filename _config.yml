@@ -26,9 +26,8 @@ description: >-
   and solutions I encounter while developing open-source software. It's only
   meant to be useful to me, but if it's useful to you as well, then it's gone
   above and beyond its original purpose.
-baseurl: "/blog" # the subpath of your site, e.g. /blog
 # the base hostname & protocol for your site, e.g. http://example.com
-url: "https://twardyece.com"
+url: "https://blog.ethantwardy.com"
 reddit_username: amateurece
 github_username: AmateurECE
 
