@@ -19,7 +19,7 @@
 # You can create any custom variable you would like, and they will be
 # accessible in the templates via {{ site.myvariable }}.
 
-title: "Ethan Twardy"
+title: "Software Development Blog"
 email: ethan.twardy@gmail.com
 description: >-
   Here is where I publish stories mostly focused on technical challenges
