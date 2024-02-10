@@ -50,6 +50,9 @@ header_pages:
 #
 exclude:
   - Jenkinsfile
+  - README.md
+  - flake.lock
+  - flake.nix
 #   - .sass-cache/
 #   - .jekyll-cache/
 #   - gemfiles/
