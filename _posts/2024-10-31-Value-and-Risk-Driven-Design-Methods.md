@@ -9,16 +9,13 @@ I've been favoring design methods lately that I would consider to be "Value-"
 and/or "Risk-" driven. "Risk-driven" design methods, as I refer to them, are
 well-documented. The book _Just Enough Software Architecture: A Risk-driven
 Approach_ by George Fairbanks stresses a risk-driven method for software
-architecture. There are standards in use in various industries that define risk
-analysis and risk-driven design methods:
+architecture. There are international standards for various industries that
+describe risk management processes proven to be successful in their target
+industry:
 
  * IEC 61508 (safety-critical industrial applications)
  * ISO 14971 (medical devices)
  * ISO 26262 (typically automotive applications)
-
-These standards describe risk management processes that are proven to be
-successful in their target industry--but there's a lot of similarity between
-them.
 
 Value-driven design methods are not well documented, but they are universally
 understood; probably, you can already guess what I mean. Here, the term refers
