@@ -21,9 +21,9 @@ successful in their target industry--but there's a lot of similarity between
 them.
 
 Value-driven design methods are not well documented, but they are universally
-understood. Probably, you can already guess what I mean. Here, I use the term
-to describe design methods that improve the value of a product or project--by
-increasing the usefulness of a product or service, or decreasing its cost.
+understood; probably, you can already guess what I mean. Here, the term refers
+to design methods that improve the value of a product or project--by increasing
+the usefulness of a product or service, or decreasing its cost.
 
 # The Source of Requirements
 
@@ -33,16 +33,18 @@ genesis of product requirements:
  * Suffering
  * Risk-analysis
 
-_Suffering_, I think, is the root cause of a _use case_. So really, use cases
-generate requirements. But what generates use cases? Ultimately, people make
-choices to lessen their suffering (or the suffering of others--I do believe in
-empathy). We can capture and model a person's choices through _functionality
-scenarios_, which describe the course taken by an actor with a goal (Fairbanks,
-2010). Generally, these don't capture the pain point that motivated an actor,
-and they also don't capture the system of interest--they simply trace an actors
-steps. Though, perhaps they _should_ capture motivation. If they did, it may be
-easier for us to develop empathy for our customers and end users. Where I work,
-in the Engineering Services industry, empathy is what keeps me from going mad.
+Really, _use cases_ are the primary source of requirements. But what generates
+use cases? Ultimately, people make choices to lessen their suffering (or the
+suffering of others--I do believe in empathy). So _suffering_, I think, is the
+root cause of a use case.
+
+We can capture and model a person's choices through _functionality scenarios_,
+which describe the course taken by an actor with a goal (Fairbanks, 2010).
+Generally, these don't capture the pain point that motivated an actor, and they
+also don't capture the system of interest--they simply trace an actor's steps.
+Though, perhaps they _should_ capture motivation. If they did, it may be easier
+for us to develop empathy for our customers and end users. Where I work, in the
+engineering services industry, empathy is what keeps me from going mad.
 
 Functionality scenarios can be used to identify and quantify use cases and
 domain concepts. From there, we can begin to identify features and facets of
@@ -74,7 +76,7 @@ constructed to fail.
 # Designing the Design Process
 
 _How_ we tackle a problem is more important than the problem itself. Lately,
-I've had one question ringing in my head, like a tape on repeat:
+I've had two questions ringing in my head, like a tape on repeat:
 
 > Do I know everything I need to know to succeed?
 > What can I do today to be more sure of my success tomorrow?
