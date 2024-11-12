@@ -1,0 +1,24 @@
+// dot -T svg design/module.gv -o design/module.svg
+digraph G {
+   node [fontname="Arial" shape=record];
+
+   problem [label="Problem"]
+   use_case [label="Use Case"]
+
+   value [label="Value"]
+   goal [label="Goal"]
+
+   risk [label="Risk"]
+   feature [label="Feature"]
+
+   risk -> goal [label="<<impede>>"]
+   risk -> use_case [label="<<impede>>"]
+   feature -> risk [label="<<mitigate>>"]
+
+   value -> goal [label="<<drive>>"]
+   feature -> goal [label="<<advance>>"]
+
+   use_case -> problem [label="<<address>>"]
+   problem -> problem [label="<<decompose>>"]
+   feature -> use_case [label="<<enable>>"]
+}
