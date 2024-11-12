@@ -44,14 +44,15 @@ this assumption, however.
 
 In my last post, I wrote about the source of requirements. You might notice
 that I only listed two sources of requirements there, but there's a third thing
-here that motivates my work--_Goals_, which are driven by _Values_. I hope you
-won't find me naive if I say that values are generally _not_ a motivating
-factor in industry. My employer defines a set of values, but they only inform
-_how_ I accomplish my work. They do not dictate _what_ I work on. Conversely, I
-as an individual can form a value statement around the accessibility and
-quality of open source software. That's enough justification to make
-contributions to the Linux kernel. I'd be surprised if businesses were making
-decisions in the same way. That's why I included it here.
+here that motivates my work--_Goals_, which are driven by _Values_. This is a
+different kind of value than the value-driven design I proposed in my last
+post. I hope you won't find me naive if I say that values are generally _not_ a
+motivating factor in industry. My employer defines a set of values, but they
+only inform _how_ I accomplish my work. They do not dictate _what_ I work on.
+Conversely, I as an individual can form a value statement around the
+accessibility and quality of open source software. That's enough justification
+to make contributions to the Linux kernel. I'd be surprised if businesses were
+making decisions in the same way. That's why I included it here.
 
 # Use Case Subtypes
 
