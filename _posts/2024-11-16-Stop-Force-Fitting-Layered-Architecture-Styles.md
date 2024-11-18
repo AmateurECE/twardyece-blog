@@ -12,22 +12,22 @@ amount of technical and regulatory complexity, and over the last decade, my
 company has been responsible for increasingly large and complex systems. There
 are two books that are highly influential for those with architectural
 influence on our team: Robert Martin's _Clean Architecture_ and Eric Evan's
-_Domain-Driven Design_. I want it to be clear that I _love_ these books.
-There's a reason they're ubiquitous, and they describe incredibly powerful ways
-to manage complexity in scalable software systems.
+_Domain-Driven Design_.
+
+I want it to be clear that I _love_ these books. There's a reason they're
+ubiquitous, and they describe incredibly powerful ways to manage complexity in
+scalable software systems. These two architecture styles generate layered
+systems and encourage teams to extract rich domain interactions and abstract
+them away from the details of the implementation. These are very powerful and
+important tools.
 
 However, I think we're doing a disservice by not also promoting _other_ books
-within the team. These two architecture styles generate layered software
-systems that encourage teams towards extracting rich domain interactions and
-abstracting them away from the details of the implementation. These are very
-powerful and important tools.
-
-Unfortunately, the software in many of the products we design simply _does not
-exhibit rich interactions between domain concepts_. That's not to say the
-product itself doesn't have knowledge of the concepts from the domain (though
-sometimes they don't). Often, however, the "interesting bits" are implemented
-in hardware, because in the eyes of the FDA, the software is guaranteed to fail
-during the lifespan of the product.
+within the team. Unfortunately, the software in many of the products we design
+simply _does not exhibit rich domain behavior_. That's not to say the product
+itself doesn't have knowledge of the concepts from the domain (though sometimes
+they don't). Often, however, the "interesting bits" are implemented in
+hardware. This is often an intentional mitigation, because in the eyes of the
+FDA, the software is guaranteed to fail during the lifespan of the product.
 
 For example, in my current product, there is a laparoscopic instrument that
 exposes a lighting element and a camera feed to the system. My product
@@ -41,21 +41,33 @@ entirely implemented in hardware. The responsibility of software in this use
 case is to tell the hardware what the desired illumination level is based on
 the user interface--the software doesn't contain any of the business logic!
 
-I caught myself slipping into the trap of applying the Clean Architecture right
-out of the gate. When I modeled this behavior, however, it was obvious that a
-layered software architecture is a poor fit for this application. There isn't
-any "pure business logic" to abstract away from the implementation. If we were
-to draw out the module viewtype of the product architecture at a system level,
-all of the software would be implemented in the lowest layer. As of today,
-however, the systems engineers haven't communicated a layered architecture
-style for the system.
+I caught myself slipping into the trap of applying The Clean Architecture right
+out of the gate. When I modeled this behavior, however, it became obvious that
+there's very little "pure business logic". If we were to draw out the module
+viewtype of the product architecture using a layered style at the system level,
+all of the software would be implemented in the lowest layer--where details
+about the user interface usually live.
 
-That's not a problem--the software should implement an architecture style that
-is a _best fit_ for the product. However, I'm experiencing political forces
-from multiple sides that are trying to push me towards a layered architecture
-style. Unfortunately, I fear that the Clean Architecture is a hammer; but not
-_every_ product is a nail. Even the most tenured engineers are limited by the
-diversity of their experiences (and their reading).
+Since we don't have very much business logic, extracting the business logic
+isn't critical to the success of this product. We don't get a lot of value from
+hoisting this guarantee into the architecture. On the other hand, modeling this
+use case showed some complicated interactions between components in our
+system--the "safe" parts, that talk to the hardware, and the "unsafe" parts
+that control the GUI. For this use case in particular, it's also clear that the
+"illumination changed" information has "event" properties. This event traces a
+thread between isolated components. Based on this view of the architecture, it
+looks easy to accidentally create tight coupling between components. We may
+also experience issues assigning coherent responsibilities to components. These
+sound like important guarantees to hoist into the architecture. So, I will be
+recommending a "pipe and filter" style, where responsibilities are
+intentionally designed into components, and components communicate using
+_Ports_, which abstract away the details of the communication mechanism, and
+provide a simple interface for full duplex event sourcing.
+
+However, I'm experiencing political forces from multiple sides that are trying
+to push me towards a layered architecture style. The Clean Architecture is a
+hammer; but not _every_ product is a nail. Even the most tenured engineers are
+limited by the diversity of their experiences (and their reading).
 
 All this to say: read books! Architecture processes are not always evident in
 the code, and open source applications that subscribe to the UNIX philosophy
