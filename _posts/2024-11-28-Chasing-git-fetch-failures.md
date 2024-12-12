@@ -76,7 +76,7 @@ Let's move down the list. GitHub wasn't reporting an outage, and since I hadn't
 had any other network troubles, it seemed unlikely to be something outside of
 my box. A bad DIMM might fit the bill, but I would expect to see other kinds of
 system instability--processes crashing and unrecoverable kernel panics at
-runtime, etc. I ran memtest86+ and didn't see any errors.
+runtime, etc.
 
 Next is the installation of git. The reported version is 2.45.2, and that
 matches the version of the installed package from `dpkg -l`. When I looked to
@@ -111,3 +111,14 @@ makes some temporary files in `/var/tmp`, perhaps the invalid logical extent
 lived somewhere in that partition. I don't exactly know what writing to that
 region would do, but I'm not surprised that it wouldn't work. I suppose I'm
 more surprised that I didn't see something about this in `dmesg` first.
+
+# December Update
+
+I never saw the failing Git clone errors again, but I _did_ start seeing other
+kinds of system instability. I saw SEGFAULTs in GCC, crashing in pseudo, and
+finally, ext4 corruption. This all prompted me to run memtest86+, and sure
+enough, I had about 2049 bad addresses. A new pair of DIMMs passed a memtest
+out of the box, and I haven't seen the problems since! It's entirely possible
+this _was_ caused by the bad RAM. But the lvm2 size issue was another ticking
+time-bomb that needed action, so I can't complain that now the both of them are
+resolved.

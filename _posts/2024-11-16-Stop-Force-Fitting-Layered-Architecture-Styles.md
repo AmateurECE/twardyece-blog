@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Stop Force-Fitting Layered Architecture Styles!
+title: Non-Layered Architecture Styles
 date: 2024-11-16
 categories: design
 ---
 
-# Stop Force-Fitting Layered Architecture Styles!
+# Non-Layered Architecture Styles
 
 I design medical devices for a living. These are products with a fantastic
 amount of technical and regulatory complexity, and over the last decade, my
@@ -64,13 +64,15 @@ intentionally designed into components, and components communicate using
 _Ports_, which abstract away the details of the communication mechanism, and
 provide a simple interface for full duplex event sourcing.
 
-However, I'm experiencing political forces from multiple sides that are trying
-to push me towards a layered architecture style. The Clean Architecture is a
-hammer; but not _every_ product is a nail. Even the most tenured engineers are
-limited by the diversity of their experiences (and their reading).
+Architecture processes are often not evident in the code, and open source
+applications that subscribe to the UNIX philosophy are not representative of
+the population of architecture styles. Because our work is so politicized by
+intellectual property rights, it's very difficult to discover new ideas, and we
+have to actively seek them out.
 
-All this to say: read books! Architecture processes are not always evident in
-the code, and open source applications that subscribe to the UNIX philosophy
-are not representative of the population of architecture styles. Because our
-work is so politicized by intellectual property rights, it's very difficult to
-discover new ideas, and we have to actively seek them out.
+December Update: My mentors ended up pushing me towards an architecture style
+that's not only layered, but also not event-driven. It applies the layers from
+_Clean Architecture_, and a pattern that I'll refer to as the _PLC pattern_.
+I'll do a write-up on this pattern in the near future. Likewise, I'll discuss
+the cited motivations for layered architecture styles. To my surprise, the
+books appear to be wildly over-constraining this style.
