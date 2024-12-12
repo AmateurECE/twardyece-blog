@@ -1,6 +1,6 @@
 ---
 layout: post
-title: New Patterns for Redfish-Codegen
+title: Implementing the batch-sequential architecture style in Rust
 date: 2024-12-11 09:00:00
 categories: design
 ---
