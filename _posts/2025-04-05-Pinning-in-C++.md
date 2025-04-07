@@ -23,10 +23,11 @@ I'm writing a driver for a specific ADC device that's connected to my SPI bus.
 So far, that may look something like this:
 
 ```
-enum class SpiError { /* Enumeration Literals... */ }
+enum class SpiError { /* Enumeration Literals... */ };
 
 class Spi {
 public:
+  Spi() = default;
   // Destructor _may_ actually do something interesting.
   ~Spi();
 
@@ -79,8 +80,8 @@ private:
 };
 ```
 
-It's _subtle_, but the move semantics of `ApplicationState` are now
-constrained. When I create a `Spi*` member variable in the `Adc` class, I'm
+The move semantics of `ApplicationState` are constrained, but not
+automatically. When I create a `Spi*` member variable in the `Adc` class, I'm
 introducing a new class invariant on `Adc`: a borrowed lifetime. This isn't
 Rust, but if it were, we would be forced to add a generic lifetime parameter on
 `Adc`, like this:
@@ -93,10 +94,11 @@ struct Adc<'a> {
 ```
 
 So that the lifetime checker could ensure we are free of temporal memory safety
-issues. C++ has nothing like this. Granted, this example is easy to spot. It
-becomes harder at scale--when there are many member variables, or when we
-aren't already familiar with the invariants on `Spi` and `Adc`--for example, if
-we didn't write them.
+issues. C++ has nothing like this. Granted, this kind of thing becomes easier
+to spot if you're used to reviewing code for this (or perhaps if you're a Rust
+programmer). It becomes harder at scale--when there are many member variables,
+or when we aren't already familiar with the invariants on `Spi` and `Adc`--for
+example, if we didn't write them.
 
 ## Pinned Places
 
@@ -230,20 +232,20 @@ constructor runs. With this in mind, we can add our constructors:
 template<Value T>
 class PinPtr {
 public:
-  // No default constructor!
-  PinPtr() = delete;
-
   template<typename U>
   PinPtr(Pin<U>& pin) : m_value{pin.operator->()} {}
 };
 ```
 
 We template the constructor to allow polymorphic pointers. We can construct a
-`PinPtr<T>` from a `Pin<U>` if `U` is a derived class of `T`. Prevailing wisdom
-would have us declare the single-arg constructor as `explicit`, but I think
-that's not necessary here. There is one--and only one--way to construct a
-`PinPtr`. Requiring an explicit constructor call would not add clarity, and
-would only add visual noise.
+`PinPtr<T>` from a `Pin<U>` if `U` is a derived class of `T`. Also recall that
+defining this constructor implicitly deletes the default constructor, which is
+critical to enforcing this invariant.
+
+Prevailing wisdom would have us declare the single-arg constructor as
+`explicit`, but I think that's not necessary here. There is one--and only
+one--way to construct a `PinPtr`. Requiring an explicit constructor call would
+not add clarity, and would only add visual noise.
 
 ## Does It Really Work, Though?
 
