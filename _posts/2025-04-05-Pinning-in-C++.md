@@ -31,7 +31,7 @@ public:
   ~Spi();
 
   std::expected<std::monostate, SpiError> write(
-    const std::span<uint8_t> data,
+    std::span<const uint8_t> data,
     uint8_t chip_select);
 
   // Delete the copy constructor
@@ -48,11 +48,12 @@ private:
 
 class Adc {
 public:
-  Adc(Spi* spi) : spi_{spi} {}
+  Adc(Spi* spi, uint8_t chip_select) : spi_{spi}, chip_select_{chip_select} {}
   uint32_t read_channel(uint8_t channel_index);
 
 private:
   Spi* spi_;
+  uint8_t chip_select_;
 };
 ```
 
@@ -87,6 +88,7 @@ Rust, but if it were, we would be forced to add a generic lifetime parameter on
 ```
 struct Adc<'a> {
   spi: &'a Spi,
+  chip_select: u8,
 }
 ```
 
@@ -176,14 +178,15 @@ this, and `PinPtr` acts just like any smart pointer type:
 ```
 class Adc {
 public:
-  Adc(PinPtr<Spi> spi) : spi_{spi} {}
+  Adc(PinPtr<Spi> spi, uint8_t chip_select) : spi_{spi}, chip_select_{chip_select} {}
   uint32_t read_channel(uint8_t channel_index) {
-    static constexpr std::array<uint8_t> command = {0x08, 0x00};
-    spi_->write(command);
+    static constexpr std::array<uint8_t, 2> command = {0x08, 0x00};
+    spi_->write(command, chip_select_);
   }
 
 private:
   PinPtr<Spi> spi_;
+  uint8_t chip_select_;
 };
 ```
 
@@ -216,7 +219,7 @@ however, may be surprising:
 
 * `T&` can only represent an lvalue.
 * `T&&` can only represent an rvalue.
-* `const T&` can represent _either_ and lvalue or an rvalue.
+* `const T&` can represent _either_ an lvalue or an rvalue.
 
 The last point is critical! Objects of `Pin<T>` are only valid as lvalues, and
 so it's only valid to construct a `PinPtr<T>` from a `Pin<T>&`--this is the
@@ -276,8 +279,8 @@ It's not a perfect bolt-on solution for temporal memory safety. In the previous
 example, `PinPtr` cannot ensure that the lifetime of `pinned` outlives the
 lifetime of `borrower`. Now that we're protected from pointer invalidation by
 move/destruction, however, other temporal memory safety issues are
-_theoretically_ harder to invoke _accidentally_, and easier to locate in code
-inspection.
+_theoretically_ harder to invoke _accidentally_, and may be easier to locate
+during code inspection.
 
 Whether this adds value, though, or visual noise, is up to you. It may feel odd
 to represent a new semantic value category using a vocabulary type. If that's
