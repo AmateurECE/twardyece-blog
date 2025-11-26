@@ -5,15 +5,6 @@ date: 2025-11-23 19:00:00
 categories: languages
 ---
 
-# Outline
-
-* Why I picked OCaml for this journey
-* Reflections on the Module system
-* The JSON parser, but don't just repeat the book chapter
-  * Mention that someone already did this
-  * Library of lexer combinators
-  * Calling the lexer
-
 Two weeks ago, I started on a journey to learn how to design programming
 languages. After thorough research, I decided to learn and use OCaml for this.
 
