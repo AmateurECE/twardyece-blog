@@ -6,6 +6,7 @@ pipeline {
         checkout scm
         sh '''#!/usr/bin/flake-run
         bundle install
+        ./fetch-parsers.sh
         bundle exec jekyll build
         '''
         sh '''#!/bin/bash

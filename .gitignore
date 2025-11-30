@@ -7,3 +7,5 @@ uml
 .bundle
 .direnv
 .gems
+.cargo
+.ts-parsers

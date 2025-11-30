@@ -17,7 +17,17 @@
         };
       in {
         default = pkgs.mkShell {
-          packages = with pkgs; [ ruby bundler plantuml graphviz-nox ];
+          packages = with pkgs; [
+            ruby
+            bundler
+            plantuml
+            graphviz-nox
+            nodejs
+            python3
+            cargo
+            rustc
+            rustPlatform.bindgenHook
+          ];
         };
       }
     );

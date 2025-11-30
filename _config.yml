@@ -36,6 +36,14 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-plantuml
+  - kramdown/syntax_tree_sitter
+
+kramdown:
+  syntax_highlighter: tree-sitter
+  syntax_highlighter_opts:
+    tree_sitter_parsers_dir: .ts-parsers
+    css_classes: true
+    fallback_to_rouge: true
 
 header_pages:
   - about.md
