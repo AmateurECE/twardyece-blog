@@ -22,7 +22,7 @@ Imagine, for example, that I have a class that represents a SPI bus, and that
 I'm writing a driver for a specific ADC device that's connected to my SPI bus.
 So far, that may look something like this:
 
-```
+```cpp
 enum class SpiError { /* Enumeration Literals... */ };
 
 class Spi {
@@ -68,7 +68,7 @@ move an instance of these objects.
 
 ...Until I do this:
 
-```
+```cpp
 class ApplicationState {
 public:
   ApplicationState() : spi_{}, left_adc_{&spi_}, right_adc_{&spi_} {}
@@ -86,7 +86,7 @@ introducing a new class invariant on `Adc`: a borrowed lifetime. This isn't
 Rust, but if it were, we would be forced to add a generic lifetime parameter on
 `Adc`, like this:
 
-```
+```rust
 struct Adc<'a> {
   spi: &'a Spi,
   chip_select: u8,
@@ -110,7 +110,7 @@ invariant. The concept of a [pinned place][2] may help us here.
 
 We'll start by introducing our type, `Pin`:
 
-```
+```cpp
 template<typename T>
 concept Value = std::is_same_v<std::remove_reference_t<std::remove_pointer_t<T>>, T>;
 
@@ -157,7 +157,7 @@ semantic value, so we disallow it.
 Now, we need a type that will allow classes to require their callers to uphold
 the immovable invariant on owned instance data. We'll call it `PinPtr`:
 
-```
+```cpp
 template<Value T>
 class PinPtr {
 public:
@@ -177,7 +177,7 @@ private:
 We'll come back to the constructors in a moment. We can now rewrite `Adc` like
 this, and `PinPtr` acts just like any smart pointer type:
 
-```
+```cpp
 class Adc {
 public:
   Adc(PinPtr<Spi> spi, uint8_t chip_select) : spi_{spi}, chip_select_{chip_select} {}
@@ -195,7 +195,7 @@ private:
 `Adc` is still movable, and so is `Spi`. But the idea is that now, when I write
 `ApplicationState`:
 
-```
+```cpp
 class ApplicationState {
 public:
   ApplicationState() : spi_{}, left_adc_{spi_}, right_adc_{spi_} {}
@@ -228,7 +228,7 @@ so it's only valid to construct a `PinPtr<T>` from a `Pin<T>&`--this is the
 only way that we can ensure the pinned object will remain valid after the
 constructor runs. With this in mind, we can add our constructors:
 
-```
+```cpp
 template<Value T>
 class PinPtr {
 public:
@@ -251,7 +251,7 @@ not add clarity, and would only add visual noise.
 
 The answer seems to be yes!
 
-```
+```cpp
 class Resource {};
 
 class Borrows {

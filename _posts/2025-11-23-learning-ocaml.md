@@ -44,7 +44,7 @@ that OCaml assigns to the module from its filename. If I prefer to nest
 modules, I might make `Foo` a submodule in `bar.ml`, where the name of `t`
 would be `Bar.Foo.t`:
 
-```
+```ocaml
 module Foo = struct
   type t = int
 end
@@ -238,7 +238,7 @@ This test is written to expect empty output, so we fully expect it to fail, and
 it does. But expect tests produce a diff in the output that, if accepted, would
 cause the test to pass:
 
-```
+```diff
 [json_parser]$ opam exec -- dune runtest
 File "test/test_json.ml", line 1, characters 0-0:
 diff --git a/_build/default/test/test_json.ml b/_build/.sandbox/713d6c9a80082f32d86b6de371e3845a/default/test/test_json.ml.corrected
