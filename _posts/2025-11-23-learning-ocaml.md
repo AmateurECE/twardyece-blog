@@ -128,9 +128,9 @@ module MOption : Monad = struct
 end
 ```
 
-I should point out another syntactic difference: OCaml does not support terse
-function definitions like Haskell, so this expression is ill-typed: `let return
-= Some`.
+I should point out another syntactic difference: OCaml does not support
+pointfree style definitions like Haskell, so this expression is ill-typed: `let
+return = Some`.
 
 In practice, however, no one writes OCaml this way. There is no abstraction for
 monads. The interface is enforced for common monads in `Base` by convention.
