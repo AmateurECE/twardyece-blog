@@ -112,7 +112,7 @@ instance Monad Maybe where
   (>>) = (*>)
 ```
 
-This is copied directly from [the source in `Base`][2]. If the monad laws are
+This is copied directly from [the source in `Base`][1]. If the monad laws are
 upheld, `return` is definitionally equal to `pure` from the `Applicative`
 typeclass, and the right sequence operator is equivalent to the same operator
 in `Applicative`.
@@ -195,7 +195,7 @@ reactimate
 
 In practice, this is often run on a side-effect-producing monadic action, like
 `IO`. However, it's polymorphic in the monad `m`, so it could just as easily be
-run on an `Either` or a `Maybe`.
+run on a `Maybe` or a list.
 
 As far as I'm aware, there's no easy way to write this function in OCaml. If we
 were to create a `Monad` module, like above, we could implement this as an
