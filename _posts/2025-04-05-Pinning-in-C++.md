@@ -4,9 +4,9 @@ title: Pinned Places in C++
 date: 2025-04-05 08:00:00
 ---
 
-Sometimes, I need to work in heapless environments. One really unfortunate
-thing about the language C++, is that move semantics become very difficult to
-express and constrain when the heap is unavailable.
+In C++, move semantics become very difficult to express and constrain
+accurately without dynamic memory allocation. This is an unfortunate feature of
+the language, especially when working in environments that don't have a heap.
 
 ## Storage Durations
 
@@ -16,7 +16,7 @@ Memory with dynamic storage duration is allocated on the heap, of course.
 All non-global variables have automatic storage duration, unless they are
 declared `static`, `extern`, or `thread_local`.
 
-## The Problem
+## The Hypothetical ADC Driver
 
 Imagine, for example, that I have a class that represents a SPI bus, and that
 I'm writing a driver for a specific ADC device that's connected to my SPI bus.
@@ -112,9 +112,9 @@ We'll start by introducing our type, `Pin`:
 
 ```cpp
 template<typename T>
-concept Value = std::is_same_v<std::remove_reference_t<std::remove_pointer_t<T>>, T>;
+concept ValueType = std::is_same_v<std::remove_reference_t<std::remove_pointer_t<T>>, T>;
 
-template<Value T>
+template<ValueType T>
 class Pin {
 public:
     using reference_type = std::add_lvalue_reference_t<T>;
@@ -125,16 +125,16 @@ public:
     ~Pin() = default;
 
     // Pinned objects intentionally have non-copyable/non-movable semantics.
-    // Strictly speaking, copy semantics ought to be definable if T is copyable,
-    // but default-ing them would restrict Pin to copyable types T. Semantically,
-    // there is no reason why we should be able to copy a pinned object, so we
-    // are safe to delete this.
+    // Strictly speaking, copy semantics ought to be definable if T is
+    // copyable, but default-ing them would restrict Pin to copyable types T.
+    // Semantically, there is no reason why we should be able to copy a pinned
+    // object, so we are safe to delete this.
     Pin(const Pin&) = delete;
     Pin& operator=(const Pin&) = delete;
     Pin(Pin&&) = delete;
     Pin& operator=(Pin&&) = delete;
 
-    reference_type operator*() const noexcept(noexcept(*std::declval<pointer_type>())) { return m_value; }
+    reference_type operator*() noexcept { return m_value; }
     pointer_type operator->() noexcept { return &m_value; }
 
 private:
@@ -158,7 +158,7 @@ Now, we need a type that will allow classes to require their callers to uphold
 the immovable invariant on owned instance data. We'll call it `PinPtr`:
 
 ```cpp
-template<Value T>
+template<ValueType T>
 class PinPtr {
 public:
     using reference_type = std::add_lvalue_reference_t<T>;
@@ -166,7 +166,10 @@ public:
 
     // TODO: Constructors?
 
-    reference_type operator*() const noexcept(noexcept(*std::declval<pointer_type>())) { return *m_value; }
+    reference_type operator*() const
+        noexcept(noexcept(*std::declval<pointer_type>())) {
+      return *m_value;
+    }
     pointer_type operator->() const noexcept { return m_value; }
 
 private:
