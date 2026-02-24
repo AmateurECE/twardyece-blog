@@ -20,12 +20,11 @@
 # accessible in the templates via {{ site.myvariable }}.
 
 title: "Software Development Blog"
-email: ethan.twardy@gmail.com
+email: et@ethantwardy.com
 description: >-
-  Here is where I publish stories mostly focused on technical challenges
-  and solutions I encounter while developing open-source software. It's only
-  meant to be useful to me, but if it's useful to you as well, then it's gone
-  above and beyond its original purpose.
+  I believe in human communication, which is why this site is free of
+  AI-generated content. All of these posts have been carefully crafted with
+  love by a human.
 # the base hostname & protocol for your site, e.g. http://example.com
 url: "https://blog.ethantwardy.com"
 reddit_username: amateurece
